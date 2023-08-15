@@ -34,14 +34,14 @@ export const RegisterModal = () => {
   const bodyContent = (
     <div className="flex flex-col gap-4">
       <Heading title="Welcome to Airbnb" subtitle="Create an account" />
-      <Input id="email" type="email" required register={register} label="Email" errors={errors} />
-      <Input id="name" type="name" required register={register} label="Name" errors={errors} />
+      <Input id="email" type="email" label="Email" required register={register} errors={errors} />
+      <Input id="name" type="name" label="Name" required register={register} errors={errors} />
       <Input
         id="password"
         type="password"
+        label="Password"
         required
         register={register}
-        label="Password"
         errors={errors}
       />
     </div>

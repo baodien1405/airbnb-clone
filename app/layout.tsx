@@ -11,7 +11,7 @@ const nunito = Nunito({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
   title: 'Airbnb Clone',
-  description: 'Build airbnb clone web app'
+  description: 'This is a Airbnb platform with Next 13'
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
