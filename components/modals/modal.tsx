@@ -100,6 +100,7 @@ export const Modal = ({
                   )}
                   <Button label={actionLabel} disabled={disabled} onClick={handleSubmit} />
                 </div>
+                {footer}
               </div>
             </div>
           </div>
