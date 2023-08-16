@@ -5,12 +5,16 @@ import { FcGoogle } from 'react-icons/fc'
 import { useCallback, useState } from 'react'
 import { FieldValues, useForm } from 'react-hook-form'
 import { toast } from 'react-hot-toast'
+import { useMutation } from '@tanstack/react-query'
 
 import { useRegisterModalStore } from '@/store'
 import { Heading } from '@/components/heading'
 import { Input } from '@/components/inputs'
 import { Button } from '@/components/button'
 import { Modal } from './modal'
+import { RegisterPayload } from '@/types'
+import { authApi } from '@/api-client'
+import axios from 'axios'
 
 export const RegisterModal = () => {
   const registerModalStore = useRegisterModalStore()
@@ -27,8 +31,28 @@ export const RegisterModal = () => {
     }
   })
 
+  const registerMutation = useMutation({
+    mutationFn: (body: RegisterPayload) => authApi.register(body)
+  })
+
   const onSubmit = (payload: FieldValues) => {
-    toast.error('Something went wrong')
+    // registerMutation.mutate(payload as RegisterPayload, {
+    //   onSuccess: (data) => {
+    //     toast.success('Register successfully')
+    //   },
+    //   onError: (error) => {
+    //     toast.error('Something went wrong')
+    //   }
+    // })
+    axios
+      .post('/api/register', payload)
+      .then(() => {
+        toast.success('Registered!')
+        registerModalStore.onClose()
+      })
+      .catch((error) => {
+        toast.error(error)
+      })
   }
 
   const bodyContent = (

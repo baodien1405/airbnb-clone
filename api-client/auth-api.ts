@@ -1,7 +1,8 @@
+import { RegisterPayload } from '@/types'
 import axiosClient from './axios-client'
 
 export const authApi = {
-  login(payload: any) {
-    return axiosClient.post('/login', payload)
+  register(payload: RegisterPayload) {
+    return axiosClient.post('/api/register', payload)
   }
 }
