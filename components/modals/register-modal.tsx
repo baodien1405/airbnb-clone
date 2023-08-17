@@ -13,6 +13,7 @@ import { Button } from '@/components/button'
 import { Modal } from './modal'
 import { RegisterPayload } from '@/types'
 import { authApi } from '@/api-client'
+import { signIn } from 'next-auth/react'
 
 export const RegisterModal = () => {
   const registerModalStore = useRegisterModalStore()
@@ -64,8 +65,18 @@ export const RegisterModal = () => {
   const footerContent = (
     <div className="flex flex-col gap-4 mt-3">
       <hr />
-      <Button outline label="Continue with Google" icon={FcGoogle} onClick={() => {}} />
-      <Button outline label="Continue with Github" icon={AiFillGithub} onClick={() => {}} />
+      <Button
+        outline
+        label="Continue with Google"
+        icon={FcGoogle}
+        onClick={() => signIn('google')}
+      />
+      <Button
+        outline
+        label="Continue with Github"
+        icon={AiFillGithub}
+        onClick={() => signIn('github')}
+      />
       <div className="text-neutral-500 text-center mt-4 font-light">
         <div className="flex items-center justify-center gap-2">
           <div>Already have an account?</div>
