@@ -2,14 +2,21 @@
 
 import { AiOutlineMenu } from 'react-icons/ai'
 import { useCallback, useState } from 'react'
+import { signOut } from 'next-auth/react'
 
 import { Avatar } from '@/components/avatar'
 import { MenuItem } from './menu-item'
-import { useRegisterModalStore } from '@/store'
+import { useRegisterModalStore, useLoginModalStore } from '@/store'
+import { SafeUser } from '@/types'
 
-export const UserMenu = () => {
+interface UserMenuProps {
+  currentUser?: SafeUser | null
+}
+
+export const UserMenu = ({ currentUser }: UserMenuProps) => {
   const [isOpen, setIsOpen] = useState(false)
   const registerModalStore = useRegisterModalStore()
+  const loginModalStore = useLoginModalStore()
 
   const toggleMenu = useCallback(() => {
     setIsOpen((prev) => !prev)
@@ -39,8 +46,22 @@ export const UserMenu = () => {
       {isOpen && (
         <div className="absolute rounded-xl shadow-md w-[40vw] md:w-3/4 bg-white overflow-hidden right-0 top-12 text-sm">
           <div className="flex flex-col cursor-pointer">
-            <MenuItem label="Login" onClick={() => {}} />
-            <MenuItem label="Sign up" onClick={registerModalStore.onOpen} />
+            {currentUser ? (
+              <>
+                <MenuItem label="My trips" onClick={() => {}} />
+                <MenuItem label="My favorites" onClick={() => {}} />
+                <MenuItem label="My reservations" onClick={() => {}} />
+                <MenuItem label="My properties" onClick={() => {}} />
+                <MenuItem label="Airbnb my home" onClick={() => {}} />
+                <hr />
+                <MenuItem label="Logout" onClick={() => signOut()} />
+              </>
+            ) : (
+              <>
+                <MenuItem label="Login" onClick={loginModalStore.onOpen} />
+                <MenuItem label="Sign up" onClick={registerModalStore.onOpen} />
+              </>
+            )}
           </div>
         </div>
       )}

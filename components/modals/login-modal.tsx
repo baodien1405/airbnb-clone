@@ -4,18 +4,18 @@ import { AiFillGithub } from 'react-icons/ai'
 import { FcGoogle } from 'react-icons/fc'
 import { FieldValues, useForm } from 'react-hook-form'
 import { toast } from 'react-hot-toast'
-import { useMutation } from '@tanstack/react-query'
+import { signIn } from 'next-auth/react'
 
-import { useRegisterModalStore } from '@/store'
+import { useLoginModalStore } from '@/store'
 import { Heading } from '@/components/heading'
 import { Input } from '@/components/inputs'
 import { Button } from '@/components/button'
 import { Modal } from './modal'
-import { RegisterPayload } from '@/types'
-import { authApi } from '@/api-client'
+import { useRouter } from 'next/navigation'
 
-export const RegisterModal = () => {
-  const registerModalStore = useRegisterModalStore()
+export const LoginModal = () => {
+  const router = useRouter()
+  const loginModalStore = useLoginModalStore()
 
   const {
     register,
@@ -23,33 +23,32 @@ export const RegisterModal = () => {
     formState: { errors }
   } = useForm<FieldValues>({
     defaultValues: {
-      name: '',
       email: '',
       password: ''
     }
   })
 
-  const registerMutation = useMutation({
-    mutationFn: (body: RegisterPayload) => authApi.register(body)
-  })
-
   const onSubmit = (payload: FieldValues) => {
-    registerMutation.mutate(payload as RegisterPayload, {
-      onSuccess: (data) => {
-        toast.success('Register successfully')
-        registerModalStore.onClose()
-      },
-      onError: (error: any) => {
-        toast.error(error)
+    signIn('credentials', {
+      ...payload,
+      redirect: false
+    }).then((callback) => {
+      if (callback?.ok) {
+        toast.success('Logged in')
+        router.refresh()
+        loginModalStore.onClose()
+      }
+
+      if (callback?.error) {
+        toast.error(callback.error)
       }
     })
   }
 
   const bodyContent = (
     <div className="flex flex-col gap-4">
-      <Heading title="Welcome to Airbnb" subtitle="Create an account!" />
+      <Heading title="Welcome back" subtitle="Login to your account!" />
       <Input id="email" type="email" label="Email" required register={register} errors={errors} />
-      <Input id="name" type="name" label="Name" required register={register} errors={errors} />
       <Input
         id="password"
         type="password"
@@ -68,12 +67,12 @@ export const RegisterModal = () => {
       <Button outline label="Continue with Github" icon={AiFillGithub} onClick={() => {}} />
       <div className="text-neutral-500 text-center mt-4 font-light">
         <div className="flex items-center justify-center gap-2">
-          <div>Already have an account?</div>
+          <div>{`Don't have an account yet?`}</div>
           <div
             className="text-neutral-800 cursor-pointer hover:underline"
-            onClick={registerModalStore.onClose}
+            onClick={loginModalStore.onClose}
           >
-            Log in
+            Sign up
           </div>
         </div>
       </div>
@@ -83,10 +82,10 @@ export const RegisterModal = () => {
   return (
     <Modal
       disabled={false}
-      isOpen={registerModalStore.isOpen}
-      title="Register"
+      isOpen={loginModalStore.isOpen}
+      title="Login"
       actionLabel="Continue"
-      onClose={registerModalStore.onClose}
+      onClose={loginModalStore.onClose}
       onSubmit={handleSubmit(onSubmit)}
       body={bodyContent}
       footer={footerContent}

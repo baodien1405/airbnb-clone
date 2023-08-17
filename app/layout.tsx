@@ -2,8 +2,9 @@ import type { Metadata } from 'next'
 import { Nunito } from 'next/font/google'
 
 import { Navbar } from '@/components/navbar'
-import { RegisterModal } from '@/components/modals'
+import { LoginModal, RegisterModal } from '@/components/modals'
 import { AppProvider } from '@/providers'
+import { getCurrentUser } from './actions'
 
 import './globals.css'
 
@@ -14,13 +15,16 @@ export const metadata: Metadata = {
   description: 'This is a Airbnb platform with Next 13'
 }
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const currentUser = await getCurrentUser()
+
   return (
     <html lang="en" suppressHydrationWarning={true}>
       <body className={nunito.className} suppressHydrationWarning={true}>
         <AppProvider>
+          <LoginModal />
           <RegisterModal />
-          <Navbar />
+          <Navbar currentUser={currentUser} />
           {children}
         </AppProvider>
       </body>
