@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import { Nunito } from 'next/font/google'
 
 import { Navbar } from '@/components/navbar'
-import { LoginModal, RegisterModal } from '@/components/modals'
+import { LoginModal, RegisterModal, RentModal } from '@/components/modals'
 import { AppProvider } from '@/providers'
 import { getCurrentUser } from './actions'
 
@@ -22,6 +22,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     <html lang="en" suppressHydrationWarning={true}>
       <body className={nunito.className} suppressHydrationWarning={true}>
         <AppProvider>
+          <RentModal />
           <LoginModal />
           <RegisterModal />
           <Navbar currentUser={currentUser} />

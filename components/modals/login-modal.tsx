@@ -5,17 +5,19 @@ import { FcGoogle } from 'react-icons/fc'
 import { FieldValues, useForm } from 'react-hook-form'
 import { toast } from 'react-hot-toast'
 import { signIn } from 'next-auth/react'
+import { useRouter } from 'next/navigation'
+import { useCallback } from 'react'
 
-import { useLoginModalStore } from '@/store'
+import { useLoginModalStore, useRegisterModalStore } from '@/store'
 import { Heading } from '@/components/heading'
 import { Input } from '@/components/inputs'
 import { Button } from '@/components/button'
 import { Modal } from './modal'
-import { useRouter } from 'next/navigation'
 
 export const LoginModal = () => {
   const router = useRouter()
   const loginModalStore = useLoginModalStore()
+  const registerModalStore = useRegisterModalStore()
 
   const {
     register,
@@ -44,6 +46,11 @@ export const LoginModal = () => {
       }
     })
   }
+
+  const toggle = useCallback(() => {
+    loginModalStore.onClose()
+    registerModalStore.onOpen()
+  }, [loginModalStore, registerModalStore])
 
   const bodyContent = (
     <div className="flex flex-col gap-4">
@@ -77,12 +84,9 @@ export const LoginModal = () => {
       />
       <div className="text-neutral-500 text-center mt-4 font-light">
         <div className="flex items-center justify-center gap-2">
-          <div>{`Don't have an account yet?`}</div>
-          <div
-            className="text-neutral-800 cursor-pointer hover:underline"
-            onClick={loginModalStore.onClose}
-          >
-            Sign up
+          <div>First time using Airbnb?</div>
+          <div className="text-neutral-800 cursor-pointer hover:underline" onClick={toggle}>
+            Create an account
           </div>
         </div>
       </div>

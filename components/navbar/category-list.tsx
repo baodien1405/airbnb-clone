@@ -11,15 +11,16 @@ import {
   GiIsland,
   GiWindmill
 } from 'react-icons/gi'
+import { usePathname, useSearchParams } from 'next/navigation'
 import { FaSkiing } from 'react-icons/fa'
 import { BsSnow } from 'react-icons/bs'
 import { IoDiamond } from 'react-icons/io5'
 import { MdOutlineVilla } from 'react-icons/md'
-import { CategoryBox } from '../category-box'
-import { Container } from '../container'
-import { usePathname, useSearchParams } from 'next/navigation'
 
-const categoryList = [
+import { CategoryBox } from '@/components/category-box'
+import { Container } from '@/components/container'
+
+export const categoryList = [
   {
     label: 'Beach',
     icon: TbBeach,
@@ -100,7 +101,6 @@ const categoryList = [
 export const CategoryList = () => {
   const params = useSearchParams()
   const category = params?.get('category')
-  console.log('🚀 ~ CategoryList ~ category:', category)
   const pathname = usePathname()
   const isMainPage = pathname === '/'
 

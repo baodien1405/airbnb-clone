@@ -5,18 +5,20 @@ import { FcGoogle } from 'react-icons/fc'
 import { FieldValues, useForm } from 'react-hook-form'
 import { toast } from 'react-hot-toast'
 import { useMutation } from '@tanstack/react-query'
+import { signIn } from 'next-auth/react'
+import { useCallback } from 'react'
 
-import { useRegisterModalStore } from '@/store'
+import { useLoginModalStore, useRegisterModalStore } from '@/store'
 import { Heading } from '@/components/heading'
 import { Input } from '@/components/inputs'
 import { Button } from '@/components/button'
 import { Modal } from './modal'
 import { RegisterPayload } from '@/types'
 import { authApi } from '@/api-client'
-import { signIn } from 'next-auth/react'
 
 export const RegisterModal = () => {
   const registerModalStore = useRegisterModalStore()
+  const loginModalStore = useLoginModalStore()
 
   const {
     register,
@@ -45,6 +47,11 @@ export const RegisterModal = () => {
       }
     })
   }
+
+  const toggle = useCallback(() => {
+    registerModalStore.onClose()
+    loginModalStore.onOpen()
+  }, [loginModalStore, registerModalStore])
 
   const bodyContent = (
     <div className="flex flex-col gap-4">
@@ -80,10 +87,7 @@ export const RegisterModal = () => {
       <div className="text-neutral-500 text-center mt-4 font-light">
         <div className="flex items-center justify-center gap-2">
           <div>Already have an account?</div>
-          <div
-            className="text-neutral-800 cursor-pointer hover:underline"
-            onClick={registerModalStore.onClose}
-          >
+          <div className="text-neutral-800 cursor-pointer hover:underline" onClick={toggle}>
             Log in
           </div>
         </div>
