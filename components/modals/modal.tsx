@@ -93,9 +93,10 @@ export const Modal = ({
                 <div className="flex flex-row items-center gap-4 w-full">
                   {secondaryAction && secondaryActionLabel && (
                     <Button
+                      outline
                       label={secondaryActionLabel}
                       disabled={disabled}
-                      onClick={handleSubmit}
+                      onClick={secondaryAction}
                     />
                   )}
                   <Button label={actionLabel} disabled={disabled} onClick={handleSubmit} />
