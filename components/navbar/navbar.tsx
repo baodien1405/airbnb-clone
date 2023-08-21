@@ -5,6 +5,7 @@ import { Logo } from './logo'
 import { Search } from './search'
 import { UserMenu } from './user-menu'
 import { SafeUser } from '@/types'
+import { CategoryList } from './category-list'
 
 interface NavbarProps {
   currentUser?: SafeUser | null
@@ -22,6 +23,8 @@ export const Navbar = ({ currentUser }: NavbarProps) => {
           </div>
         </Container>
       </div>
+
+      <CategoryList />
     </div>
   )
 }
