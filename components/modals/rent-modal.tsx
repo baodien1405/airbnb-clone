@@ -3,12 +3,17 @@
 import { FieldValues, useForm } from 'react-hook-form'
 import dynamic from 'next/dynamic'
 import { useMemo, useState } from 'react'
+import { toast } from 'react-hot-toast'
+import { useRouter } from 'next/navigation'
+import { useMutation } from '@tanstack/react-query'
 
 import { useRentModalStore } from '@/store'
 import { Modal } from './modal'
 import { Heading } from '../heading'
 import { categoryList } from '../navbar/category-list'
-import { CategoryInput, Counter, CountrySelect, ImageUpload } from '../inputs'
+import { CategoryInput, Counter, CountrySelect, ImageUpload, Input } from '../inputs'
+import { Listing } from '@prisma/client'
+import { listingApi } from '@/api-client/listing-api'
 
 enum STEPS {
   CATEGORY = 0,
@@ -20,6 +25,7 @@ enum STEPS {
 }
 
 export const RentModal = () => {
+  const router = useRouter()
   const rentModalStore = useRentModalStore()
 
   const [step, setStep] = useState(STEPS.CATEGORY)
@@ -29,6 +35,7 @@ export const RentModal = () => {
     handleSubmit,
     setValue,
     watch,
+    reset,
     formState: { errors }
   } = useForm<FieldValues>({
     defaultValues: {
@@ -51,21 +58,18 @@ export const RentModal = () => {
   const bathroomCount = watch('bathroomCount')
   const imageSrc = watch('imageSrc')
 
+  const listingMutation = useMutation({
+    mutationFn: (body: Listing) => listingApi.create(body)
+  })
+
   const Map = useMemo(
     () =>
       dynamic(() => import('../map'), {
         ssr: false
       }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [location]
   )
-
-  const setCustomValue = (id: string, value: any) => {
-    setValue(id, value, {
-      shouldValidate: true,
-      shouldTouch: true,
-      shouldDirty: true
-    })
-  }
 
   const actionLabel = useMemo(() => {
     if (step === STEPS.PRICE) return 'Create'
@@ -79,12 +83,39 @@ export const RentModal = () => {
     return 'Back'
   }, [step])
 
+  const setCustomValue = (id: string, value: any) => {
+    setValue(id, value, {
+      shouldValidate: true,
+      shouldTouch: true,
+      shouldDirty: true
+    })
+  }
+
   const handleBack = () => {
     setStep((value) => value - 1)
   }
 
   const handleNext = () => {
     setStep((value) => value + 1)
+  }
+
+  const handleRentSubmit = (formValues: FieldValues) => {
+    if (step !== STEPS.PRICE) {
+      return handleNext()
+    }
+
+    listingMutation.mutate(formValues as Listing, {
+      onSuccess: () => {
+        toast.success('Listing created!')
+        reset()
+        router.refresh()
+        setStep(STEPS.CATEGORY)
+        rentModalStore.onClose()
+      },
+      onError: (error: any) => {
+        toast.error(error)
+      }
+    })
   }
 
   let bodyContent = (
@@ -156,6 +187,52 @@ export const RentModal = () => {
     )
   }
 
+  if (step === STEPS.DESCRIPTION) {
+    bodyContent = (
+      <div className="flex flex-col gap-8">
+        <Heading
+          title="How would you describe your place?"
+          subtitle="Short and sweet words best!"
+        />
+        <Input
+          id="title"
+          label="Title"
+          disabled={listingMutation.isLoading}
+          register={register}
+          errors={errors}
+          required
+        />
+        <hr />
+        <Input
+          id="description"
+          label="Description"
+          disabled={listingMutation.isLoading}
+          register={register}
+          errors={errors}
+          required
+        />
+      </div>
+    )
+  }
+
+  if (step === STEPS.PRICE) {
+    bodyContent = (
+      <div className="flex flex-col gap-8">
+        <Heading title="Now, set your price" subtitle="How much do you charge per night?" />
+        <Input
+          id="price"
+          label="Price"
+          formatPrice
+          type="number"
+          disabled={listingMutation.isLoading}
+          register={register}
+          errors={errors}
+          required
+        />
+      </div>
+    )
+  }
+
   return (
     <Modal
       isOpen={rentModalStore.isOpen}
@@ -164,8 +241,9 @@ export const RentModal = () => {
       secondaryActionLabel={secondaryActionLabel}
       secondaryAction={step === STEPS.CATEGORY ? undefined : handleBack}
       body={bodyContent}
+      disabled={listingMutation.isLoading}
       onClose={rentModalStore.onClose}
-      onSubmit={handleNext}
+      onSubmit={handleSubmit(handleRentSubmit)}
     />
   )
 }
