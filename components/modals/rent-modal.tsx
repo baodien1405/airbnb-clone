@@ -6,14 +6,14 @@ import { useMemo, useState } from 'react'
 import { toast } from 'react-hot-toast'
 import { useRouter } from 'next/navigation'
 import { useMutation } from '@tanstack/react-query'
+import { Listing } from '@prisma/client'
 
 import { useRentModalStore } from '@/store'
 import { Modal } from './modal'
 import { Heading } from '../heading'
 import { categoryList } from '../navbar/category-list'
 import { CategoryInput, Counter, CountrySelect, ImageUpload, Input } from '../inputs'
-import { Listing } from '@prisma/client'
-import { listingApi } from '@/api-client/listing-api'
+import { listingApi } from '@/api-client'
 
 enum STEPS {
   CATEGORY = 0,
