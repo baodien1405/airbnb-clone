@@ -1,8 +1,8 @@
 import { ClientOnly } from '@/components/client-only'
 import { Container } from '@/components/container'
-import { getCurrentUser, getListings } from './actions'
 import { EmptyState } from '@/components/empty-state'
-import { ListingCard } from '@/components/listing-card'
+import { ListingCard } from '@/components/listings'
+import { getCurrentUser, getListings } from './actions'
 
 export default async function Home() {
   const listings = await getListings()
