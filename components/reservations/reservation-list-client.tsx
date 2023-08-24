@@ -1,23 +1,23 @@
 'use client'
 
 import { useCallback } from 'react'
+import { useMutation } from '@tanstack/react-query'
+import { reservationApi } from '@/api-client'
+
 import { SafeUser } from '@/types'
 import { Reservation } from '@prisma/client'
-import { toast } from 'react-hot-toast'
-import { useRouter } from 'next/navigation'
-import { useMutation } from '@tanstack/react-query'
-
 import { Container } from '../container'
 import { Heading } from '../heading'
 import { ListingCard } from '../listings'
-import { reservationApi } from '@/api-client'
+import { toast } from 'react-hot-toast'
+import { useRouter } from 'next/navigation'
 
-interface TripListClientProps {
-  currentUser: SafeUser
+interface ReservationClientProps {
+  currentUser?: SafeUser | null
   reservations: Reservation[]
 }
 
-export const TripListClient = ({ currentUser, reservations }: TripListClientProps) => {
+export const ReservationListClient = ({ currentUser, reservations }: ReservationClientProps) => {
   const router = useRouter()
 
   const { mutate, isLoading } = useMutation({
@@ -36,12 +36,13 @@ export const TripListClient = ({ currentUser, reservations }: TripListClientProp
         }
       })
     },
-    [mutate, router]
+    [router, mutate]
   )
 
   return (
     <Container>
-      <Heading title="Trips" subtitle="Where you've been and where you're going" />
+      <Heading title="Reservations" subtitle="Bookings on your properties" />
+
       <div
         className="
           mt-10
@@ -63,7 +64,7 @@ export const TripListClient = ({ currentUser, reservations }: TripListClientProp
             actionId={reservation.id}
             onAction={handleCancelReservation}
             disabled={isLoading}
-            actionLabel="Cancel reservation"
+            actionLabel="Cancel guest reservation"
             currentUser={currentUser}
           />
         ))}

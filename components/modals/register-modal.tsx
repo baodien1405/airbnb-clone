@@ -41,6 +41,7 @@ export const RegisterModal = () => {
       onSuccess: (data) => {
         toast.success('Register successfully')
         registerModalStore.onClose()
+        loginModalStore.onOpen()
       },
       onError: (error: any) => {
         toast.error(error)
