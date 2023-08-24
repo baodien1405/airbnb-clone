@@ -1,4 +1,4 @@
-import { getCurrentUser, getListingById } from '@/app/actions'
+import { getCurrentUser, getListingById, getReservations } from '@/app/actions'
 import { ClientOnly } from '@/components/client-only'
 import { EmptyState } from '@/components/empty-state'
 import { ListingClient } from '@/components/listings'
@@ -9,6 +9,7 @@ interface ListingPageProps {
 
 export const ListingPage = async ({ params }: ListingPageProps) => {
   const listing = await getListingById(params.listingId)
+  const reservations = await getReservations(params)
   const currentUser = await getCurrentUser()
 
   if (!listing) {
@@ -21,7 +22,7 @@ export const ListingPage = async ({ params }: ListingPageProps) => {
 
   return (
     <ClientOnly>
-      <ListingClient listing={listing} currentUser={currentUser} />
+      <ListingClient listing={listing} reservations={reservations} currentUser={currentUser} />
     </ClientOnly>
   )
 }
