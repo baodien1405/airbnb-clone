@@ -15,6 +15,7 @@ import { ListingInfo } from './listing-info'
 import { ListingReservation } from './listing-reservation'
 import { reservationApi } from '@/api-client'
 import { useLoginModalStore } from '@/store'
+import { useRouter } from 'next/navigation'
 
 interface ListingClientProps {
   listing: Listing & { user: User | SafeUser }
@@ -32,6 +33,7 @@ export const ListingClient = ({ listing, currentUser, reservations = [] }: Listi
   const loginModalStore = useLoginModalStore()
   const [totalPrice, setTotalPrice] = useState(listing.price)
   const [dateRange, setDateRange] = useState<Range>(initialDateRange)
+  const router = useRouter()
 
   useEffect(() => {
     if (dateRange.startDate && dateRange.endDate) {
@@ -83,6 +85,7 @@ export const ListingClient = ({ listing, currentUser, reservations = [] }: Listi
       onSuccess: () => {
         toast.success('Listing reserved!')
         setDateRange(initialDateRange)
+        router.push('/trips')
       },
       onError: (error: any) => {
         toast.error('Something went wrong.')
@@ -95,7 +98,8 @@ export const ListingClient = ({ listing, currentUser, reservations = [] }: Listi
     mutate,
     totalPrice,
     currentUser,
-    loginModalStore
+    loginModalStore,
+    router
   ])
 
   return (

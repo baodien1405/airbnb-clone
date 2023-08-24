@@ -7,7 +7,7 @@ interface ListingPageProps {
   params: { listingId: string }
 }
 
-export const ListingPage = async ({ params }: ListingPageProps) => {
+export const ListingDetailPage = async ({ params }: ListingPageProps) => {
   const listing = await getListingById(params.listingId)
   const reservations = await getReservations(params)
   const currentUser = await getCurrentUser()
@@ -27,4 +27,4 @@ export const ListingPage = async ({ params }: ListingPageProps) => {
   )
 }
 
-export default ListingPage
+export default ListingDetailPage

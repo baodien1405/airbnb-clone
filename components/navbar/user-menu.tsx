@@ -8,6 +8,7 @@ import { Avatar } from '@/components/avatar'
 import { MenuItem } from './menu-item'
 import { useRegisterModalStore, useLoginModalStore, useRentModalStore } from '@/store'
 import { SafeUser } from '@/types'
+import { useRouter } from 'next/navigation'
 
 interface UserMenuProps {
   currentUser?: SafeUser | null
@@ -18,6 +19,7 @@ export const UserMenu = ({ currentUser }: UserMenuProps) => {
   const registerModalStore = useRegisterModalStore()
   const loginModalStore = useLoginModalStore()
   const rentModalStore = useRentModalStore()
+  const router = useRouter()
 
   const toggleMenu = useCallback(() => {
     setIsOpen((prev) => !prev)
@@ -55,7 +57,7 @@ export const UserMenu = ({ currentUser }: UserMenuProps) => {
           <div className="flex flex-col cursor-pointer">
             {currentUser ? (
               <>
-                <MenuItem label="My trips" onClick={() => {}} />
+                <MenuItem label="My trips" onClick={() => router.push('/trips')} />
                 <MenuItem label="My favorites" onClick={() => {}} />
                 <MenuItem label="My reservations" onClick={() => {}} />
                 <MenuItem label="My properties" onClick={() => {}} />
