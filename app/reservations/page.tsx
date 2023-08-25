@@ -3,7 +3,7 @@ import { ClientOnly } from '@/components/client-only'
 import { EmptyState } from '@/components/empty-state'
 import { ReservationListClient } from '@/components/reservations'
 
-const Reservations = async () => {
+const ReservationsPage = async () => {
   const currentUser = await getCurrentUser()
 
   if (!currentUser) {
@@ -34,4 +34,4 @@ const Reservations = async () => {
   )
 }
 
-export default Reservations
+export default ReservationsPage
