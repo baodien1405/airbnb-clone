@@ -5,7 +5,7 @@ export const reservationApi = {
   create(payload: Omit<Reservation, 'id' | 'userId' | 'createAt'>): Promise<Listing> {
     return axiosClient.post('/api/reservations', payload)
   },
-  delete(id: string): Promise<Reservation> {
+  delete(id: string): Promise<any> {
     return axiosClient.delete(`/api/reservations/${id}`)
   }
 }
